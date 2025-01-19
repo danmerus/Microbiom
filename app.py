@@ -5,27 +5,30 @@ import joblib
 # 1) Load the trained model
 model = joblib.load("model.joblib")
 
-st.title("Medical Group Classifier")
+st.title("Определитель типа питания")
 
 st.write("""
-Enter values for **9 features**, then click **Predict** to see the predicted group.
+Введите значения показателей микробиоты
 """)
+feature_list = ['Общая бактериальная масса',
+ 'Доля нормальной микробиоты',
+ 'Разнообразие микробиоты',
+ 'Общее количество  Bifidobacterium',
+ 'Общее количество Lactobacterium',
+ 'Bacteroides/fermicutes',
+ 'Дрожжи',
+ 'Условнопатогенная',
+ 'Патогенная флора']
+foods = ['МЯСОЕДЫ', 'МОЛОКОЕДЫ', 'СЛАДКОЕЖКИ', 'ХЛЕБОЕДЫ', 'ОВОЩЕЕДЫ']
 
-# 2) Ask user for each of the 9 features
-f1 = st.number_input("Feature 1", value=0.0)
-f2 = st.number_input("Feature 2", value=0.0)
-f3 = st.number_input("Feature 3", value=0.0)
-f4 = st.number_input("Feature 4", value=0.0)
-f5 = st.number_input("Feature 5", value=0.0)
-f6 = st.number_input("Feature 6", value=0.0)
-f7 = st.number_input("Feature 7", value=0.0)
-f8 = st.number_input("Feature 8", value=0.0)
-f9 = st.number_input("Feature 9", value=0.0)
+input_values = []
+for feature_name in feature_list:
+    value = st.number_input(feature_name, value=0.0)
+    input_values.append(value)
 
 # 3) When user clicks, do the prediction
-if st.button("Predict"):
-    # Convert all inputs to a numpy array shape = (1, 9)
-    X_new = np.array([[f1, f2, f3, f4, f5, f6, f7, f8, f9]])
-    
+if st.button("Рассчёт"):
+    X_new = np.array([input_values])
     predicted_group = model.predict(X_new)[0]
-    st.write(f"**Predicted group:** {predicted_group}")
+    # st.write("Вы ввели:", input_values)
+    st.write(f"**Ваша группа:** {foods[predicted_group].lower()}")
